@@ -5,7 +5,7 @@ import java.util.Observable;
 
 
 /** The state of a game of 2048.
- *  @author TODO: YOUR NAME HERE
+ *  @author SiCheng Meng
  */
 public class Model extends Observable {
     /** Current contents of the board. */
@@ -114,6 +114,15 @@ public class Model extends Observable {
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
 
+        int size = board.size();
+        /** Moving north only for now. */
+        side = Side.NORTH;
+        for (int c = 0; c < size; c++) {
+            for (int r = size - 1; r >= 0; r--) {
+                Tile t = board.tile(r, c);
+            }
+        }
+
         checkGameOver();
         if (changed) {
             setChanged();
@@ -137,7 +146,14 @@ public class Model extends Observable {
      *  Empty spaces are stored as null.
      * */
     public static boolean emptySpaceExists(Board b) {
-        // TODO: Fill in this function.
+        int size = b.size();
+        for (int c = 0; c < size; c++) {
+            for (int r = 0; r < size; r++) {
+                if (b.tile(c, r) == null) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -147,7 +163,13 @@ public class Model extends Observable {
      * given a Tile object t, we get its value with t.value().
      */
     public static boolean maxTileExists(Board b) {
-        // TODO: Fill in this function.
+        for (int c = 0; c < b.size(); c++) {
+            for (int r = 0; r < b.size(); r++) {
+                if (b.tile(c, r) != null && b.tile(c, r).value() == MAX_PIECE) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -158,7 +180,27 @@ public class Model extends Observable {
      * 2. There are two adjacent tiles with the same value.
      */
     public static boolean atLeastOneMoveExists(Board b) {
-        // TODO: Fill in this function.
+        int size = b.size();
+        /** There is at least one empty space on the board. */
+        if (emptySpaceExists(b)) {
+            return true;
+        }
+        /** There are two adjacent tiles (horizontal) with the same value. */
+        for (int c = 0; c < size - 1; c++) {
+            for (int r = 0; r < size; r++) {
+                if (b.tile(c, r).value() == b.tile(c + 1, r).value()) {
+                    return true;
+                }
+            }
+        }
+        /** There are two adjacent tiles (vertical) with the same value. */
+        for (int c = 0; c < size; c++) {
+            for (int r = 0; r < size - 1; r++) {
+                if (b.tile(c, r).value() == b.tile(c, r + 1).value()) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 

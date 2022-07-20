@@ -24,7 +24,7 @@ public class DebugExercise1 {
 
         int t3 = 3;
         int b3 = 4;
-        int result3 = divideThenRound(t3, b3);
+        int result3 = divideThenRound(t3, b3); /* Bug is here. Should have returned 1 but returning 0 instead. */
         System.out.println("round(" + t3 + "/" + b3 + ")=" + result3);
     }
 }
