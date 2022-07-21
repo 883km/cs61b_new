@@ -2,6 +2,7 @@ package hashmap;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Set;
 
 /**
@@ -28,10 +29,10 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     }
 
     /* Instance Variables */
-    private Collection<Node>[] buckets;
+    private Collection<Node>[] buckets; // an ARRAY of Collection<Node> objects
     private int initialSize = 16;
     private double loadFactor = 0.75;
-    // You should probably define some more!
+    private int size;
 
     /** Constructors */
     public MyHashMap() {
@@ -58,7 +59,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * Returns a new node to be placed in a hash table bucket
      */
     private Node createNode(K key, V value) {
-        return null;
+        return new Node(key, value);
     }
 
     /**
@@ -80,7 +81,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * OWN BUCKET DATA STRUCTURES WITH THE NEW OPERATOR!
      */
     protected Collection<Node> createBucket() {
-        return null;
+        return new LinkedList<Node>();
     }
 
     /**
@@ -98,27 +99,48 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
 
     @Override
     public void clear() {
-
+        buckets = null;
+        size = 0;
     }
 
     @Override
     public boolean containsKey(K key) {
-        return false;
+        if (buckets == null) {
+            return false;
+        }
+        return get(key) != null;
     }
 
     @Override
     public V get(K key) {
+        if (buckets == null) {
+            return null;
+        }
+        int h = hash(key);
+        for (Node node : buckets[h]) {
+            if (node.key.equals(key)) {
+                return node.value;
+            }
+        }
         return null;
     }
 
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     @Override
     public void put(K key, V value) {
-
+        if (buckets == null) {
+            buckets = createTable(initialSize);
+        }
+        // TODO: resize
+        //containsKey
+        int h = hash(key);
+        if (buckets[h] == null) {
+            buckets[h] = createBucket();
+        }
     }
 
     @Override
@@ -139,5 +161,9 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     @Override
     public V remove(K key, V value) {
         throw new UnsupportedOperationException();
+    }
+
+    private int hash(K key) {
+        return Math.abs(key.hashCode()) % buckets.length;
     }
 }
